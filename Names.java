@@ -110,9 +110,51 @@ public class Names extends JFrame{
      * @param s the String array to be sorted
      */
     public void nameSort(String[] s){
-        
+        //doQuickSort(s, 0, s.length -1);
     }
-
+    /**
+     * This method uses the Quick Sort algorithm to sort 
+     * a String array
+     * @param s The String array to sort
+     * @param start the beginning subscript in the array
+     * @param end the ending subscript of the list
+     */
+    private void doQuickSort(String[] s, int start, int end){
+        int pivotPoint;
+        if(start < end){
+            //get pivot point
+            pivotPoint = partition(s, start, end);
+            
+            //Sort the first sublist
+            doQuickSort(s, start, pivotPoint-1);
+            
+            //Sort second half of the list
+            doQuickSort(s, pivotPoint+1, end);
+        }
+    }
+    /**
+     * This method selects a pivot value in an array and arranges
+     * the array into two sublists.
+     * @param s the array to partition
+     * @param start the beginning subscript of the array to partition
+     * @param end the ending subscript of the array to partition
+     */
+    private int partition(String[] s, int start, int end){
+        int pivotVal, endOfLeftList, mid;
+        
+        //Find the subscript of the middle element.
+        mid = (start + end)/2;
+        
+        //swap the middle element with the first. this moves the pivot
+        // to the start of the list.
+        //swap(s, start, mid);
+        
+        //save the pivot
+        //pivotVal = 
+        endOfLeftList = start;
+        
+        return endOfLeftList;
+    }
     /**
      * @param args the command line arguments
      */
