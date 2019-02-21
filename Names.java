@@ -20,7 +20,7 @@ import java.util.logging.Logger;
  */
 public class Names extends JFrame{
     
-    JButton btn;
+    JButton btn, quit;
     JLabel lbl;
     JPanel pan;
     ArrayList<String> ar = new ArrayList<>();
@@ -34,11 +34,14 @@ public class Names extends JFrame{
      */
     public Names(){
         btn = new JButton();
+        quit = new JButton();
         btn.setText("Click to Sort");
+        quit.setText("Exit");
         lbl = new JLabel("Sorting by Ascending Alpha: ");
         pan = new JPanel(new BorderLayout());
         
-        pan.add(btn, BorderLayout.SOUTH);
+        pan.add(btn, BorderLayout.WEST);
+        pan.add(quit, BorderLayout.SOUTH);
         pan.add(lbl, BorderLayout.NORTH);
         add(pan);
         
@@ -46,6 +49,7 @@ public class Names extends JFrame{
         setSize(500, 300);
         setVisible(true);
         setLocationRelativeTo(null);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         
         btn.addMouseListener(new java.awt.event.MouseAdapter(){
             @Override
@@ -63,6 +67,14 @@ public class Names extends JFrame{
      */
     private void btnMouseClicked(java.awt.event.MouseEvent ae) throws IOException{
         lbl.setText("Clicked");
+        readIn();
+        convert(ar);
+        //check for population into String[]
+        for(String x : sa){
+            System.out.println(x);
+        }
+        nameSort(sa);
+        doQuickSort(sa, 0, sa.length-1);
         
     }
     
@@ -76,7 +88,9 @@ public class Names extends JFrame{
             while(dis.available()>0) {
                 k = dis.readUTF();
                 ar.add(k);
+                
             }
+            System.out.println(ar);     //debugging
         }
         catch (IOException e){
             
@@ -98,9 +112,11 @@ public class Names extends JFrame{
         List<String> list = new ArrayList<>();
         for(String x : a){
             list.add(x);
+            //System.out.println(x);        debugging
         }
         String[] s = new String[list.size()];
         s = list.toArray(s);
+        
         return sa = s;
     }
     
@@ -140,20 +156,39 @@ public class Names extends JFrame{
      * @param end the ending subscript of the array to partition
      */
     private int partition(String[] s, int start, int end){
-        int pivotVal, endOfLeftList, mid;
-        
+        int endOfLeftList, mid;
+        String pivotVal;
         //Find the subscript of the middle element.
         mid = (start + end)/2;
         
-        //swap the middle element with the first. this moves the pivot
+        //swap the middle elementk with the first. this moves the pivot
         // to the start of the list.
-        //swap(s, start, mid);
+        swap(s, start, mid);
         
         //save the pivot
-        //pivotVal = 
+        pivotVal = s[start];
+        
         endOfLeftList = start;
         
+        for(int scan = start+1; scan<= end; scan++){
+            if(s[scan].compareTo(pivotVal)<0){
+                endOfLeftList++;
+                swap(s, endOfLeftList, scan);
+            }
+        }
         return endOfLeftList;
+    }
+    /**
+     * This method swaps the contents of two elements
+     * @param s the array 
+     * @param a the subscript of the first element
+     * @param b the subscript of the second element
+     */
+    private void swap(String[] s, int a, int b){
+        String temp;
+        temp = s[a];
+        s[a] = s[b];
+        s[b] = temp;
     }
     /**
      * @param args the command line arguments
