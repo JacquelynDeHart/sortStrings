@@ -21,13 +21,14 @@ import java.util.logging.Logger;
 public class Names extends JFrame{
     
     JButton btn, quit;
-    JLabel lbl;
+    JLabel lbl, nameSorted;
     JPanel pan;
     ArrayList<String> ar = new ArrayList<>();
     String[] sa;
     InputStream is = null;
     DataInputStream dis = null;
-    String k;
+    String k,ls;
+    private JList list;
     /**
      * constructor for the class
      * GUI implementation
@@ -38,11 +39,14 @@ public class Names extends JFrame{
         btn.setText("Click to Sort");
         quit.setText("Exit");
         lbl = new JLabel("Sorting by Ascending Alpha: ");
+        nameSorted = new JLabel();
+        nameSorted.setText("Sorted names will go here: ");
         pan = new JPanel(new BorderLayout());
         
         pan.add(btn, BorderLayout.WEST);
         pan.add(quit, BorderLayout.SOUTH);
         pan.add(lbl, BorderLayout.NORTH);
+        pan.add(nameSorted, BorderLayout.NORTH);
         add(pan);
         
         setTitle("QuickSort names");
@@ -61,21 +65,50 @@ public class Names extends JFrame{
                 }
             }
         });
+        quit.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent ae){
+                try {
+                    quitMouseClicked(ae);
+                } catch (IOException ex) {
+                    Logger.getLogger(Names.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+
+        });
     }
+    /**
+     * private method to handle the quit button click
+     */
+    private void quitMouseClicked(java.awt.event.MouseEvent ae) throws IOException{
+        System.exit(0);
+    }
+                
     /**
      * private method to handle the button click
      */
     private void btnMouseClicked(java.awt.event.MouseEvent ae) throws IOException{
-        lbl.setText("Clicked");
+        lbl.setText("Here are the sorted names: ");
         readIn();
         convert(ar);
         //check for population into String[]
-        for(String x : sa){
-            System.out.println(x);
-        }
+//        for(String x : sa){
+//            System.out.println(x);
+//        }
         nameSort(sa);
         doQuickSort(sa, 0, sa.length-1);
-        
+        //check for sorted
+        for(String x : sa){
+            System.out.println(x);
+            //ls = ls + (x +", \n");
+        }//nameSorted.setText(ls);
+        list = new JList(sa);
+        list.setLayoutOrientation(JList.VERTICAL_WRAP);
+        list.setVisibleRowCount(-1);
+        JScrollPane listScroller = new JScrollPane(list);
+        listScroller.setPreferredSize(new Dimension(250, 80));
+        listScroller.setAlignmentX(LEFT_ALIGNMENT);
+        pan.add(listScroller, BorderLayout.CENTER);
     }
     
     /**
