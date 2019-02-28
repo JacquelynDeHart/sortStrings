@@ -16,13 +16,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 /**
  *
- * @author Jacquelyn Johnson
+ * @author owner
  */
 public class Names extends JFrame{
     
     JButton btn, quit;
-    JLabel lbl, nameSorted;
-    JPanel pan;
+    JLabel nameSorted;
+    JPanel pan, btnPan, searchPan;
     ArrayList<String> ar = new ArrayList<>();
     String[] sa;
     InputStream is = null;
@@ -38,19 +38,18 @@ public class Names extends JFrame{
         quit = new JButton();
         btn.setText("Click to Sort");
         quit.setText("Exit");
-        lbl = new JLabel("Sorting by Ascending Alpha: ");
+        
         nameSorted = new JLabel();
         nameSorted.setText("Sorted names will go here: ");
         pan = new JPanel(new BorderLayout());
         
         pan.add(btn, BorderLayout.WEST);
         pan.add(quit, BorderLayout.SOUTH);
-        pan.add(lbl, BorderLayout.NORTH);
         pan.add(nameSorted, BorderLayout.NORTH);
         add(pan);
         
         setTitle("QuickSort names");
-        setSize(500, 300);
+        setSize(620, 300);
         setVisible(true);
         setLocationRelativeTo(null);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -88,20 +87,19 @@ public class Names extends JFrame{
      * private method to handle the button click
      */
     private void btnMouseClicked(java.awt.event.MouseEvent ae) throws IOException{
-        lbl.setText("Here are the sorted names: ");
+        nameSorted.setText("Here are the sorted names: ");
         readIn();
         convert(ar);
         //check for population into String[]
-//        for(String x : sa){
+//        for(String x : sa){               //debugging
 //            System.out.println(x);
 //        }
-        nameSort(sa);
         doQuickSort(sa, 0, sa.length-1);
         //check for sorted
-        for(String x : sa){
-            System.out.println(x);
-            //ls = ls + (x +", \n");
-        }//nameSorted.setText(ls);
+//        for(String x : sa){               //debugging
+//            System.out.println(x);}            
+//            //ls = ls + (x +", \n");
+//        }//nameSorted.setText(ls);
         list = new JList(sa);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         list.setVisibleRowCount(-1);
@@ -109,6 +107,9 @@ public class Names extends JFrame{
         listScroller.setPreferredSize(new Dimension(250, 80));
         listScroller.setAlignmentX(LEFT_ALIGNMENT);
         pan.add(listScroller, BorderLayout.CENTER);
+        
+        String input = JOptionPane.showInputDialog("Enter a name to search for: ");
+        doBinSearch(sa, input);
     }
     
     /**
@@ -123,7 +124,7 @@ public class Names extends JFrame{
                 ar.add(k);
                 
             }
-            System.out.println(ar);     //debugging
+            //System.out.println(ar);     //debugging
         }
         catch (IOException e){
             
@@ -142,25 +143,18 @@ public class Names extends JFrame{
      * @return the String array
      */
     public String[] convert(ArrayList<String> a){
-        List<String> list = new ArrayList<>();
+        List<String> l = new ArrayList<>();
         for(String x : a){
-            list.add(x);
+            l.add(x);
             //System.out.println(x);        debugging
         }
-        String[] s = new String[list.size()];
-        s = list.toArray(s);
+        String[] s = new String[l.size()];
+        s = l.toArray(s);
         
         return sa = s;
     }
     
-    /**
-     * This method will accept a String array as an argument and sort the 
-     * contents. It will call itself until all elements are sorted.
-     * @param s the String array to be sorted
-     */
-    public void nameSort(String[] s){
-        //doQuickSort(s, 0, s.length -1);
-    }
+
     /**
      * This method uses the Quick Sort algorithm to sort 
      * a String array
@@ -169,9 +163,10 @@ public class Names extends JFrame{
      * @param end the ending subscript of the list
      */
     private void doQuickSort(String[] s, int start, int end){
-        int pivotPoint;
+        int pivotPoint;               
+        
         if(start < end){
-            //get pivot point
+            //get pivot point: returns an int
             pivotPoint = partition(s, start, end);
             
             //Sort the first sublist
@@ -194,7 +189,7 @@ public class Names extends JFrame{
         //Find the subscript of the middle element.
         mid = (start + end)/2;
         
-        //swap the middle elementk with the first. this moves the pivot
+        //swap the middle element with the first. this moves the pivot
         // to the start of the list.
         swap(s, start, mid);
         
@@ -223,6 +218,16 @@ public class Names extends JFrame{
         s[a] = s[b];
         s[b] = temp;
     }
+    
+    /**
+     * This method implements a binary search of the sorted array
+     * @param s the array to search through
+     * @param i the input string to search for
+     */
+    public void doBinSearch(String[] s, String i){
+        
+    }
+    
     /**
      * @param args the command line arguments
      */
