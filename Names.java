@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.awt.*;
 import java.io.FileInputStream;
 import java.io.DataInputStream;
+import java.util.Collections;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -20,15 +21,16 @@ import java.util.logging.Logger;
  */
 public class Names extends JFrame{
     
-    JButton btn, quit;
+    JButton btn, quit,search;
     JLabel nameSorted;
     JPanel pan, btnPan, searchPan;
     ArrayList<String> ar = new ArrayList<>();
     String[] sa;
     InputStream is = null;
     DataInputStream dis = null;
-    String k,ls;
+    String k,ls, input;
     private JList list;
+    int result;
     /**
      * constructor for the class
      * GUI implementation
@@ -90,16 +92,9 @@ public class Names extends JFrame{
         nameSorted.setText("Here are the sorted names: ");
         readIn();
         convert(ar);
-        //check for population into String[]
-//        for(String x : sa){               //debugging
-//            System.out.println(x);
-//        }
+
         doQuickSort(sa, 0, sa.length-1);
-        //check for sorted
-//        for(String x : sa){               //debugging
-//            System.out.println(x);}            
-//            //ls = ls + (x +", \n");
-//        }//nameSorted.setText(ls);
+
         list = new JList(sa);
         list.setLayoutOrientation(JList.VERTICAL_WRAP);
         list.setVisibleRowCount(-1);
@@ -108,8 +103,29 @@ public class Names extends JFrame{
         listScroller.setAlignmentX(LEFT_ALIGNMENT);
         pan.add(listScroller, BorderLayout.CENTER);
         
-        String input = JOptionPane.showInputDialog("Enter a name to search for: ");
-        doBinSearch(sa, input);
+        search = new JButton("Click to search");
+        search.addMouseListener(new java.awt.event.MouseAdapter(){
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent ae){
+                try{
+                    searchMouseClicked(ae);
+                }catch (IOException ex){
+                    Logger.getLogger(Names.class.getName()).log(Level.SEVERE, null, ex);
+                }
+            }
+        });
+        pan.add(search, BorderLayout.EAST);
+
+    }
+    /**
+     * private method to handle the mouse click of the search button.
+     * allows the user to input a name to search for using a binary search.
+     */
+    private void searchMouseClicked(java.awt.event.MouseEvent ae) throws IOException
+    {
+       
+        input = JOptionPane.showInputDialog("Enter a name to search for: ");
+        displayResult(result= doBinSearch(sa, input));    
     }
     
     /**
@@ -124,7 +140,6 @@ public class Names extends JFrame{
                 ar.add(k);
                 
             }
-            //System.out.println(ar);     //debugging
         }
         catch (IOException e){
             
@@ -133,7 +148,7 @@ public class Names extends JFrame{
                 is.close();
             if(dis != null)
                 dis.close();
-        }
+        } 
         return ar;
     }
     
@@ -146,7 +161,6 @@ public class Names extends JFrame{
         List<String> l = new ArrayList<>();
         for(String x : a){
             l.add(x);
-            //System.out.println(x);        debugging
         }
         String[] s = new String[l.size()];
         s = l.toArray(s);
@@ -187,7 +201,7 @@ public class Names extends JFrame{
         int endOfLeftList, mid;
         String pivotVal;
         //Find the subscript of the middle element.
-        mid = (start + end)/2;
+        mid = start +(end - start)/2;
         
         //swap the middle element with the first. this moves the pivot
         // to the start of the list.
@@ -224,8 +238,39 @@ public class Names extends JFrame{
      * @param s the array to search through
      * @param i the input string to search for
      */
-    public void doBinSearch(String[] s, String i){
-        
+    public int doBinSearch(String[] s, String i){
+        //declare and initialize variables
+        int low = 0;
+        int right = s.length - 1;
+        //use while loop to search for the element in the array
+        while (low<= right){
+            int mid = low+(right - low)/2;
+            //compare the values 
+            int res = i.compareToIgnoreCase(s[mid]);System.out.println(res);
+            if(res == 0){
+                return mid;
+            }
+            if(res >0){
+                low = mid+1;
+                //System.out.println(mid);
+            }       
+            else 
+                right = mid-1;       
+        }
+        return -1;
+    }
+    
+    /**
+     * interprets result of binary search
+     * @param f the result of the binary search method
+     */
+    public void displayResult(int f){
+        if(f == -1)
+            JOptionPane.showMessageDialog(null, "The name was not found.");
+        else{
+            JOptionPane.showMessageDialog(null, "The name "+input+" was found"+
+                    " at index "+f+".");
+        }
     }
     
     /**
