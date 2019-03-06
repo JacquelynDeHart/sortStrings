@@ -218,6 +218,11 @@ public class Names extends JFrame{
                 swap(s, endOfLeftList, scan);
             }
         }
+        
+        //move the pivot value to the end of the left sublist
+        swap(s, start, endOfLeftList);
+        
+        //return the subscript of the pivot value
         return endOfLeftList;
     }
     /**
